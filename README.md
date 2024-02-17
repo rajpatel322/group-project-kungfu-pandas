@@ -1,1 +1,1 @@
-Hello, welcome to KungFu Pandas team
+Hello, welcome to KungFu Pandas team. Have a nice day
