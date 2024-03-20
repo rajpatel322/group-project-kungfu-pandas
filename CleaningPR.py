@@ -234,6 +234,8 @@ def transpose_data(data:pd.DataFrame):
     for c in columns:
         data[c] = data[c].apply(lambda x: round(x, 2))
 
+    data['date'] = pd.to_datetime(data['date'])
+
     return data.copy()
 def main():
     print("Welcome to the Cleaning Process, BE PATIENT WITH ME")

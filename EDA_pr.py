@@ -47,8 +47,8 @@ def get_neighborhood_price_stats(data:pd.DataFrame):
     max_date_list = []
     
     for column in columns:
-        min_date = data.loc[data[column] == data[column].min(), 'date'].iloc[0]
-        max_date = data.loc[data[column] == data[column].max(), 'date'].iloc[0]
+        min_date = data.loc[data[column] == data[column].min(), 'date'].to_list()[0]
+        max_date = data.loc[data[column] == data[column].max(), 'date'].to_list()[0]
         min_price_list.append(data[column].min())
         min_date_list.append(min_date)
         max_price_list.append(data[column].max())
@@ -61,13 +61,17 @@ def get_neighborhood_price_stats(data:pd.DataFrame):
     map['Max Date'] = max_date_list
 
     df = pd.DataFrame(map)
+
+    df['Min Date'] = pd.to_datetime(df['Min Date'])
+    df['Max Date'] = pd.to_datetime(df['Max Date'])
+
     # df['Min Price'] = df['Min Price'].astype(float)
     # df['Max Price'] = df['Max Price'].astype(float)
 
     pd.set_option("display.max_rows", None)
 
     # get the min, max, range, average price for all neighborhoods and their specifications
-    print(df.iloc[:,:], end = "\n\n")
+    print(df.to_string(index=False), end = "\n\n")
     
     # get the avg min price, avg max price for all neighborhoods and their specifications
     print("AVG MIN PRICE: ", df['Min Price'].mean(), "  AVG MAX PRICE: ", df['Max Price'].mean(), end="\n\n")
@@ -81,10 +85,11 @@ def get_neighborhood_price_stats(data:pd.DataFrame):
     # Most Expensive Neighborhood amongs the max price houses in each neighborhood
     row2 = df.loc[df['Max Price'] == df['Max Price'].max(), ['Neighborhood', 'Max Price', 'Max Date']].iloc[0]
 
-    print("Least Expensive Neighborhood: ",row1.iloc[0], ' $',row1.iloc[1], ' ',row1.iloc[2], end="\n\n", sep='')
+    print("Least Expensive Neighborhood: ",row1.iloc[0], ' $',row1.iloc[1], ' ',row1.iloc[2].date().strftime("%Y-%m-%d"), end="\n\n", sep='')
 
-    print("Most Expensive Neighborhood: ",row2.iloc[0], ' $',row2.iloc[1], ' ',row2.iloc[2], end="\n\n", sep ='')
+    print("Most Expensive Neighborhood: ",row2.iloc[0], ' $',row2.iloc[1], ' ',row2.iloc[2].date().strftime("%Y-%m-%d"), end="\n\n", sep ='')
 
+    # print(df['Max Date'].info())
     
 
 def main():
