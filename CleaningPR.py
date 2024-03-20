@@ -80,7 +80,39 @@ community_areas = {
         76: "O'Hare",
         77: "Edgewater"
     }
-    
+severity_scores = {
+    'THEFT': 'Low',
+    'ROBBERY': 'High',
+    'SEX OFFENSE': 'High',
+    'OTHER OFFENSE': 'Medium',
+    'WEAPONS VIOLATION': 'Medium',
+    'OFFENSE INVOLVING CHILDREN': 'High',
+    'DECEPTIVE PRACTICE': 'Medium',
+    'STALKING': 'Medium',
+    'MOTOR VEHICLE THEFT': 'Medium',
+    'CRIMINAL DAMAGE': 'Medium',
+    'CRIMINAL TRESPASS': 'Low',
+    'BATTERY': 'Medium',
+    'ASSAULT': 'Medium',
+    'HOMICIDE': 'High',
+    'PROSTITUTION': 'Low',
+    'BURGLARY': 'Medium',
+    'NARCOTICS': 'Medium',
+    'KIDNAPPING': 'High',
+    'ARSON': 'High',
+    'CONCEALED CARRY LICENSE VIOLATION': 'Medium',
+    'CRIMINAL SEXUAL ASSAULT': 'High',
+    'INTERFERENCE WITH PUBLIC OFFICER': 'Medium',
+    'PUBLIC PEACE VIOLATION': 'Low',
+    'LIQUOR LAW VIOLATION': 'Low',
+    'INTIMIDATION': 'Medium',
+    'GAMBLING': 'Low',
+    'OBSCENITY': 'Medium',
+    'PUBLIC INDECENCY': 'Low',
+    'OTHER NARCOTIC VIOLATION': 'Medium',
+    'NON-CRIMINAL': 'Low',
+    'HUMAN TRAFFICKING': 'High'
+}
 
 def convertCrimeData(crime_data:pd.DataFrame):
     crime_data['Arrest'] = crime_data['Arrest'].replace({
@@ -112,6 +144,7 @@ def pre_covid_post_covid(crime_data:pd.DataFrame):
 
     # Pre Covid
     crime_data_2017_2019 = crime_data_2017_2019[(crime_data_2017_2019['New_Date'].dt.year >= 2017) & (crime_data_2017_2019['New_Date'].dt.year <= 2019)]
+    
     # print("Before Droping NAN for pre covid")
     # print("Number of NaN value for Location ",crime_data_2017_2019['Location'].isna().sum())
     # print("Number of NaN value for Location Description",crime_data_2017_2019['Location Description'].isna().sum())
@@ -134,6 +167,7 @@ def pre_covid_post_covid(crime_data:pd.DataFrame):
 
     crime_data_2021_present = crime_data_2021_present[crime_data_2021_present['New_Date'].dt.year >= 2021]
     
+    crime_data_2021_present['Severity_Score'] = crime_data_2021_present['Primary Type'].map(severity_scores)
     # print("Before Droping NAN for post covid")
     # print("Number of NaN value for Location ",crime_data_2021_present['Location'].isna().sum())
     # print("Number of NaN value for Location Description",crime_data_2021_present['Location Description'].isna().sum())
@@ -156,7 +190,7 @@ def pre_covid_post_covid(crime_data:pd.DataFrame):
 
     # crime_data_2017_2019.rename(columns={'Location':'RegionName'}, inplace = True)
     # crime_data_2021_present.rename(columns={'Location':'RegionName'}, inplace = True)
-
+    crime_data_2017_2019['Severity_Score'] = crime_data_2017_2019['Primary Type'].map(severity_scores)
     return (crime_data_2017_2019, crime_data_2021_present)
 
 
