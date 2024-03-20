@@ -189,6 +189,17 @@ def transpose_data(data:pd.DataFrame):
     data = data.iloc[1:]
     data.reset_index(inplace=True)
     data.rename(columns={'index':'date'}, inplace=True)
+
+    # droping the column which contain NA value (We can afford to drop a neighborhood)
+    data.dropna(axis=1, inplace = True)
+
+    # Converting the price to 2 decimal point
+    columns = data.columns.to_list()
+
+    columns = columns[1:]
+    for c in columns:
+        data[c] = data[c].apply(lambda x: round(x, 2))
+
     return data.copy()
 def main():
     print("Welcome to the Cleaning Process, BE PATIENT WITH ME")
