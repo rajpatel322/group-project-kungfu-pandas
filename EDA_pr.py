@@ -41,10 +41,13 @@ def get_neighborhood_price_stats(data:pd.DataFrame):
     columns = columns[1:] # skip the first index
     print("THE MINIMUM AND MAXIMUM HOUSE PRICES FOR EACH NEIGHBORHOOD AND THE DATES FOR WHEN THESE PRICES OCCURED", end= "\n\n")
     map = {}
+    map2 = {}
     min_price_list = []
     max_price_list = []
     min_date_list = []
     max_date_list = []
+    avg_price_list = []
+    median_price_list = []
     
     for column in columns:
         min_date = data.loc[data[column] == data[column].min(), 'date'].to_list()[0]
@@ -53,6 +56,8 @@ def get_neighborhood_price_stats(data:pd.DataFrame):
         min_date_list.append(min_date)
         max_price_list.append(data[column].max())
         max_date_list.append(max_date)
+        avg_price_list.append(data[column].mean())
+        median_price_list.append(data[column].median())
 
     map['Neighborhood'] = columns
     map['Min Price'] = min_price_list
@@ -60,7 +65,12 @@ def get_neighborhood_price_stats(data:pd.DataFrame):
     map['Max Price'] = max_price_list
     map['Max Date'] = max_date_list
 
+    map2['Neighborhood'] = columns
+    map2['Avg Price'] = avg_price_list
+    map2['Med Price'] = median_price_list
+
     df = pd.DataFrame(map)
+    df2 = pd.DataFrame(map2)
 
     df['Min Date'] = pd.to_datetime(df['Min Date'])
     df['Max Date'] = pd.to_datetime(df['Max Date'])
@@ -85,16 +95,43 @@ def get_neighborhood_price_stats(data:pd.DataFrame):
     # Most Expensive Neighborhood amongs the max price houses in each neighborhood
     row2 = df.loc[df['Max Price'] == df['Max Price'].max(), ['Neighborhood', 'Max Price', 'Max Date']].iloc[0]
 
-    print("Least Expensive Neighborhood: ",row1.iloc[0], ' $',row1.iloc[1], ' ',row1.iloc[2].date().strftime("%Y-%m-%d"), end="\n\n", sep='')
+    print("Cheapest House Price: ",row1.iloc[0], ' $',row1.iloc[1], ' ',row1.iloc[2].date().strftime("%Y-%m-%d"), end="\n\n", sep='')
 
-    print("Most Expensive Neighborhood: ",row2.iloc[0], ' $',row2.iloc[1], ' ',row2.iloc[2].date().strftime("%Y-%m-%d"), end="\n\n", sep ='')
+    print("Expensive House Price: ",row2.iloc[0], ' $',row2.iloc[1], ' ',row2.iloc[2].date().strftime("%Y-%m-%d"), end="\n\n", sep ='')
 
+    avg_Min = df2.loc[df2['Avg Price'] == df2['Avg Price'].min(), ['Neighborhood', 'Avg Price']].iloc[0]
+    avg_Max = df2.loc[df2['Avg Price'] == df2['Avg Price'].max(), ['Neighborhood', 'Avg Price']].iloc[0]
+
+    med_min = df2.loc[df2['Med Price'] == df2['Med Price'].min(), ['Neighborhood', 'Med Price']].iloc[0]
+    med_max = df2.loc[df2['Med Price'] == df2['Med Price'].max(), ['Neighborhood', 'Med Price']].iloc[0]
+    
+    print('USING AVERAGE')
+    print("\tCheapest Neighborhood: ", avg_Min.iloc[0], ' $',avg_Min.iloc[1], end="\n\n", sep='')
+    print("\tExpensive Neighborhood: ", avg_Max.iloc[0], ' $',avg_Max.iloc[1], end="\n\n", sep='')
+
+
+    print('USING MEDIAN')
+    print("\tCheapest Neighborhood: ", med_min.iloc[0], ' $',med_min.iloc[1], end="\n\n", sep='')
+    print("\tExpensive Neighborhood: ", med_max.iloc[0], ' $',med_max.iloc[1], end="\n\n", sep='')
     # print(df['Max Date'].info())
     
+
+def get_crime_stats(data:pd.DataFrame):
+    # most and least common type of crime
+    # neighborhoods with the most and least arrest  # more arrest = active police
+    # neighborhoods with the most and least crime   # more crime = less safe
+    # most and least common crime location
+    # The day with the most crime 
+    print('spaceholder')
+
 
 def main():
     neighborhood_2017_2019 = pd.read_csv('csv_files/neighborhood_data_2017_2019.csv')
     neighborhood_2021_present = pd.read_csv('csv_files/neighborhood_data_2021_present.csv')
+
+
+
+
 
     print("HOUSE PRICE BETWEEN 2017-19")
     get_neighborhood_price_stats(neighborhood_2017_2019)
