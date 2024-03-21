@@ -129,6 +129,11 @@ def get_crime_stats(data:pd.DataFrame):
     group_df = (data2.groupby(['RegionName']).sum().reset_index())
     group_df_2 = (data2.groupby(['RegionName']).count().reset_index())
 
+
+    print("THE NUMBER OF CRIMES FOR EACH NEIGHBORHOOD\n")
+    pd.set_option("display.max_rows", None)
+    print(group_df_2.to_string(index=False), end = "\n\n")
+
     least_arrest = group_df[group_df['Arrest']==group_df['Arrest'].min()].iloc[0]
     most_arrest = group_df[group_df['Arrest']==group_df['Arrest'].max()].iloc[0]
 
