@@ -258,7 +258,7 @@ def main():
     print(neighborhood_data_2017_2019)
     print(neighborhood_data_2021_present)
 
-    pre_covid_data.to_csv('csv_files/Crimes_2021_to_Present.csv', index=False)
+    post_covid_data.to_csv('csv_files/Crimes_2021_to_Present.csv', index=False)
     pre_covid_data.to_csv('csv_files/Crimes_2017_to_2019.csv', index=False)
 
     neighborhood_data_2017_2019.to_csv('csv_files/neighborhood_data_2017_2019.csv', index = False)

@@ -118,11 +118,57 @@ def get_neighborhood_price_stats(data:pd.DataFrame):
 
 def get_crime_stats(data:pd.DataFrame):
     # most and least common type of crime
+
+    print("Least Common Type of Crime: ",data['Primary Type'].min())
+    print("Most Common Type of Crime: ",data['Primary Type'].max(), end="\n\n\n")
+
     # neighborhoods with the most and least arrest  # more arrest = active police
+    # step 1, group the data
+    data2 = data[['RegionName', 'Arrest']]
+
+    group_df = (data2.groupby(['RegionName']).sum().reset_index())
+    group_df_2 = (data2.groupby(['RegionName']).count().reset_index())
+
+    least_arrest = group_df[group_df['Arrest']==group_df['Arrest'].min()].iloc[0]
+    most_arrest = group_df[group_df['Arrest']==group_df['Arrest'].max()].iloc[0]
+
+    print("Neighborhood with Least Arrest: ", least_arrest.iloc[0], ", Number of Arrest: ", least_arrest.iloc[1])
+    print("Neighborhood with Most Arrest: ",most_arrest.iloc[0], ", Number of Arrest: ", most_arrest.iloc[1], end="\n\n\n")
+
     # neighborhoods with the most and least crime   # more crime = less safe
-    # most and least common crime location
+    least_crime = group_df_2[group_df_2['Arrest']==group_df_2['Arrest'].min()].iloc[0]
+    most_crime = group_df_2[group_df_2['Arrest']==group_df_2['Arrest'].max()].iloc[0]
+
+    print("Neighborhood with Least Crime: ", least_crime.iloc[0], ", Number of Crimes: ", least_crime.iloc[1])
+    print("Neighborhood with Most Crime: ",most_crime.iloc[0], ", Number of Crimes: ", most_crime.iloc[1], end="\n\n")
+    # most and least common crime location description
+
+    data3 = data[['Location Description', 'ID']]
+    data3 = (data3.groupby(['Location Description']).count().reset_index())
+    data3.rename(columns={'ID':'NUM CRIME'}, inplace=True)
+    print("TOP 5 LCOATION MOST CRIME")
+    print(data3.sort_values('NUM CRIME', ascending=False).head(5).to_string(index=False), end="\n\n")
+
+    print("TOP 5 LOCATION LEAST CRIME")
+    print(data3.sort_values('NUM CRIME').head(5).to_string(index=False), end = "\n\n\n")
+
     # The day with the most crime 
-    print('spaceholder')
+    data['New_Date'] = pd.to_datetime(data['New_Date'])
+    # print(data.head())
+    data4 = data.copy()
+    data4 = data4[['New_Date', 'ID']]
+    data4['New_Date'] = data4['New_Date'].apply(lambda x: x.strftime("%B"))
+    
+    data4 = data4.groupby(['New_Date']).count().reset_index()
+    data4.rename(columns={'New_Date':'Month', "ID": 'NUM CRIMES'}, inplace=True)
+    print("LIST OF MONTHS WITH NUMBER OF CRIMES FROM MOST TO LEAST", end="\n\n")
+    print(data4.sort_values('NUM CRIMES', ascending=False).to_string(index=False), end= "\n\n\n")
+
+    # Use Severity to display most common level of crime in each neighborhood
+    data5 = data[['RegionName', 'Severity_Score']]
+    data5 = data5.groupby('RegionName')['Severity_Score'].agg(lambda x: x.mode()).reset_index()
+    print("MOST COMMON LEVEL OF CRIME IN EACH NEIGHBORHOOD")
+    print(data5.sort_values('Severity_Score', ascending=False).to_string(index=False))
 
 
 def main():
@@ -130,14 +176,21 @@ def main():
     neighborhood_2021_present = pd.read_csv('csv_files/neighborhood_data_2021_present.csv')
 
 
-
-
-
     print("HOUSE PRICE BETWEEN 2017-19")
     get_neighborhood_price_stats(neighborhood_2017_2019)
     print("~"*160)
     print("HOUSE PRICE BETWEEN 2021-present")
     get_neighborhood_price_stats(neighborhood_2021_present)
+
+    print("#"*160)
+    crime_data1 = pd.read_csv('csv_files/Crimes_2017_to_2019.csv')
+    print("CRIME STATS (2017-19)")
+    get_crime_stats(crime_data1)
+
+    print("~"*160)
+    crime_data2= pd.read_csv('csv_files/Crimes_2021_to_Present.csv')
+    print("CRIME STATS (2021-Present)")
+    get_crime_stats(crime_data2)
 
 if __name__ == "__main__":
     main()
