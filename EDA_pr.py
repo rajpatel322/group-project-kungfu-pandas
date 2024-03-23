@@ -126,9 +126,10 @@ def get_crime_stats(data:pd.DataFrame):
     # step 1, group the data
     data2 = data[['RegionName', 'Arrest']]
 
-    group_df = (data2.groupby(['RegionName']).sum().reset_index())
-    group_df_2 = (data2.groupby(['RegionName']).count().reset_index())
-
+    group_df = (data2.groupby(['RegionName']).sum().reset_index()) # Arrest
+    
+    group_df_2 = (data2.groupby(['RegionName']).count().reset_index()) # Crime
+    group_df_2.rename(columns={'Arrest':'NUM CRIME'}, inplace=True)
 
     print("THE NUMBER OF CRIMES FOR EACH NEIGHBORHOOD\n")
     pd.set_option("display.max_rows", None)
@@ -141,8 +142,8 @@ def get_crime_stats(data:pd.DataFrame):
     print("Neighborhood with Most Arrest: ",most_arrest.iloc[0], ", Number of Arrest: ", most_arrest.iloc[1], end="\n\n\n")
 
     # neighborhoods with the most and least crime   # more crime = less safe
-    least_crime = group_df_2[group_df_2['Arrest']==group_df_2['Arrest'].min()].iloc[0]
-    most_crime = group_df_2[group_df_2['Arrest']==group_df_2['Arrest'].max()].iloc[0]
+    least_crime = group_df_2[group_df_2['NUM CRIME']==group_df_2['NUM CRIME'].min()].iloc[0]
+    most_crime = group_df_2[group_df_2['NUM CRIME']==group_df_2['NUM CRIME'].max()].iloc[0]
 
     print("Neighborhood with Least Crime: ", least_crime.iloc[0], ", Number of Crimes: ", least_crime.iloc[1])
     print("Neighborhood with Most Crime: ",most_crime.iloc[0], ", Number of Crimes: ", most_crime.iloc[1], end="\n\n")
@@ -151,7 +152,7 @@ def get_crime_stats(data:pd.DataFrame):
     data3 = data[['Location Description', 'ID']]
     data3 = (data3.groupby(['Location Description']).count().reset_index())
     data3.rename(columns={'ID':'NUM CRIME'}, inplace=True)
-    print("TOP 5 LCOATION MOST CRIME")
+    print("TOP 5 LOCATION MOST CRIME")
     print(data3.sort_values('NUM CRIME', ascending=False).head(5).to_string(index=False), end="\n\n")
 
     print("TOP 5 LOCATION LEAST CRIME")
