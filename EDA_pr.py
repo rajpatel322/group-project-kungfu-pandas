@@ -84,10 +84,10 @@ def get_neighborhood_price_stats(data:pd.DataFrame):
     print(df.to_string(index=False), end = "\n\n")
     
     # get the avg min price, avg max price for all neighborhoods and their specifications
-    print("AVG MIN PRICE: ", df['Min Price'].mean(), "  AVG MAX PRICE: ", df['Max Price'].mean(), end="\n\n")
+    print("AVG MIN PRICE: ", round(df['Min Price'].mean(),2), "  AVG MAX PRICE: ", round(df['Max Price'].mean(),2), end="\n\n")
 
     # get median min price, median max price for all neighborhoods and their specifications
-    print("MEDIAN MIN PRICE: ", df['Min Price'].median(), "  MEDIAN MAX PRICE: ", df['Max Price'].median(), end="\n\n")
+    print("MEDIAN MIN PRICE: ", round(df['Min Price'].median(),2), "  MEDIAN MAX PRICE: ", round(df['Max Price'].median(),2), end="\n\n")
 
     # Most Cheap Neighborhood amongs the min price houses in each neighborhood
     row1 = df.loc[df['Min Price'] == df['Min Price'].min(), ['Neighborhood', 'Min Price', 'Min Date']].iloc[0]
@@ -106,13 +106,13 @@ def get_neighborhood_price_stats(data:pd.DataFrame):
     med_max = df2.loc[df2['Med Price'] == df2['Med Price'].max(), ['Neighborhood', 'Med Price']].iloc[0]
     
     print('USING AVERAGE')
-    print("\tCheapest Neighborhood: ", avg_Min.iloc[0], ' $',avg_Min.iloc[1], end="\n\n", sep='')
-    print("\tExpensive Neighborhood: ", avg_Max.iloc[0], ' $',avg_Max.iloc[1], end="\n\n", sep='')
+    print("\tCheapest Neighborhood: ", avg_Min.iloc[0], ' $',avg_Min.iloc[1].round(2), end="\n\n", sep='')
+    print("\tExpensive Neighborhood: ", avg_Max.iloc[0], ' $',avg_Max.iloc[1].round(2), end="\n\n", sep='')
 
 
     print('USING MEDIAN')
-    print("\tCheapest Neighborhood: ", med_min.iloc[0], ' $',med_min.iloc[1], end="\n\n", sep='')
-    print("\tExpensive Neighborhood: ", med_max.iloc[0], ' $',med_max.iloc[1], end="\n\n", sep='')
+    print("\tCheapest Neighborhood: ", med_min.iloc[0], ' $',med_min.iloc[1].round(2), end="\n\n", sep='')
+    print("\tExpensive Neighborhood: ", med_max.iloc[0], ' $',med_max.iloc[1].round(2), end="\n\n", sep='')
     # print(df['Max Date'].info())
     
 
