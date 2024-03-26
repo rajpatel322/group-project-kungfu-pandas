@@ -7,9 +7,7 @@ import numpy as np
 import pandas as pd 
 
 
-def feature_selection_and_evaluation(X, y):
-
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+def feature_selection_and_evaluation(X_train, y_train):
     
     encoder = OneHotEncoder()
     k_folds = KFold(n_splits=4, shuffle=True, random_state=42)
