@@ -136,8 +136,14 @@ def dropCrimeDataColumns(col:list, crime_data:pd.DataFrame):
 def get_community(code):
     return community_areas[code]
 
+def decade_crime(crime_data:pd.DataFrame):
+    crime_data_decade = crime_data.copy()
+    crime_data_decade = crime_data_decade[(crime_data_decade['New_Date'].dt.year >= 2014)]
+    crime_data_decade['Severity_Score'] = crime_data_decade['Primary Type'].map(severity_scores)
+    return (crime_data_decade)
+
+
 def pre_covid_post_covid(crime_data:pd.DataFrame):
-    crime_data
 
     crime_data_2017_2019 = crime_data.copy()
     crime_data_2021_present = crime_data.copy()
@@ -210,6 +216,7 @@ def pre_covid_hd_post_covid_hd(neighborhood_data:pd.DataFrame):
     neighborhood_data_2021_present = pd.concat([first_half_column_2, second_half_column_2], axis=1)
     return (neighborhood_data_2017_2019, neighborhood_data_2021_present)
 
+
 def transpose_data(data:pd.DataFrame):
     data.reset_index(inplace=True)
     neighborhood_names_list = data["RegionName"].to_list()
@@ -246,7 +253,9 @@ def main():
     
     col = ['ID', 'New_Date', 'Primary Type', 'Location Description', 'Arrest', 'Community Area', 'RegionName']
     crime_data = dropCrimeDataColumns(col, crime_data) # Drop the unnecessary columns
+
     (pre_covid_data, post_covid_data) = pre_covid_post_covid(crime_data)
+    decade_crime_data = decade_crime(crime_data)
     print(pre_covid_data)
     print(post_covid_data)
 
@@ -260,6 +269,7 @@ def main():
 
     post_covid_data.to_csv('csv_files/Crimes_2021_to_Present.csv', index=False)
     pre_covid_data.to_csv('csv_files/Crimes_2017_to_2019.csv', index=False)
+    decade_crime_data.to_csv('csv_files/Crimes_2014.csv', index=False)
 
     neighborhood_data_2017_2019.to_csv('csv_files/neighborhood_data_2017_2019.csv', index = False)
     neighborhood_data_2021_present.to_csv('csv_files/neighborhood_data_2021_present.csv', index = False)
