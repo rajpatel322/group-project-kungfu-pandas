@@ -7,6 +7,52 @@ import numpy as np
 import pandas as pd 
 
 
+# Skeleton of MajorityLabelClassifier is consistent with other sklearn classifiers
+class MajorityLabelClassifier():
+    """
+    A classifier that predicts the mode of training labels
+    """
+    
+    def __init__(self):
+        """
+        Initialize your parameter here
+        """
+        self.mode = None
+
+    def fit(self, X, y):
+        """
+        Implement fit by taking training data X and their labels y and finding the mode of y
+        i.e. store your learned parameter
+        """
+        # Create a dictionary to store the frequency of each element
+        freq = {}
+        for element in y:
+            if element not in freq:
+                freq[element] = 1
+            else:
+                freq[element] += 1
+
+
+        max_freq = 0
+        mode = None
+        for key, val in freq.items():
+            if val > max_freq:
+                max_freq = val
+                mode = key
+        
+        self.mode = mode
+
+
+    def predict(self, X):
+        """
+        Implement to give the mode of training labels as a prediction for each data instance in X
+        return labels
+        """
+        print(self.mode)
+        return [self.mode] * (X.shape[0])
+
+
+
 def feature_selection_and_evaluation(X_train, y_train):
     
     encoder = OneHotEncoder()
