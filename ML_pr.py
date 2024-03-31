@@ -48,7 +48,6 @@ class MajorityLabelClassifier():
         Implement to give the mode of training labels as a prediction for each data instance in X
         return labels
         """
-        print(self.mode)
         return [self.mode] * (X.shape[0])
 
 
