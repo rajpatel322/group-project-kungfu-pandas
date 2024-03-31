@@ -81,3 +81,60 @@ def feature_selection_and_evaluation(X_train, y_train):
     best_combination = combination[best_index]
     best_accuracy = avg_accuracy[best_index]
     return best_combination, best_accuracy
+
+
+def best_feature(crime_data_2014: pd.DataFrame, X_train, y_train):
+
+    '''
+    Step 2: Best Feature
+    '''
+    (features, accuracy) = feature_selection_and_evaluation(X_train, y_train)
+    print("Best Features", features, "Accuracy of Logistic Regression: ", accuracy)
+
+    '''
+    Step 3: Comparsion
+        This is the simple baseline model and its accuracy
+    '''
+    baselineClf = MajorityLabelClassifier()
+    baselineClf.fit(X_train, y_train)
+    predict_Y = baselineClf.predict(X_train)
+
+    sum = 0
+    for x, x2 in zip(y_train, predict_Y):
+        if(x == x2):
+            sum += 1
+
+    print("Accuracy of the baseline model: ",sum/len(y_train))
+
+    return features
+
+def train_test(X_train, X_test, y_train, y_test, features):
+    '''
+    Step 1
+        Training the model on the best parameter
+    '''
+    encoder = OneHotEncoder(handle_unknown='ignore')  # Handle unknown categories by ignoring them
+    X_train_encoded = encoder.fit_transform(X_train[features]) # encode the training data
+    X_test_encoded = encoder.transform(X_test[features]) # encode the training data
+    model = LogisticRegression(random_state=42, solver='liblinear') # create the Logistic Regression model
+
+    '''
+    Step 2
+        Test the model
+    '''
+    model.fit(X_train_encoded, y_train)
+    probabilities = model.predict_proba(X_test_encoded)[:, 1]
+
+    # y_pred = model.predict(X_test)
+
+    accuracy = accuracy_score(y_test, (probabilities > 0.5).astype(int))
+    print("Accuracy:", accuracy)
+
+    '''
+    Step 3
+        New dataframe using ML prediction
+    '''
+    probabilities_arrest_df = pd.DataFrame(probabilities)
+    probabilities_arrest_df.rename(columns={0:'Prob'}, inplace=True)
+    X_test['Prob'] = probabilities
+    display(X_test.head())

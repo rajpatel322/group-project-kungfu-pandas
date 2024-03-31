@@ -115,18 +115,19 @@ severity_scores = {
 }
 
 def convertCrimeData(crime_data:pd.DataFrame):
-    crime_data['Arrest'] = crime_data['Arrest'].replace({
+    crime_data_copy = crime_data.copy()
+    crime_data_copy['Arrest'] = crime_data_copy['Arrest'].replace({
         True:1,
         False:0
     })
-    crime_data['New_Date'] = pd.to_datetime(crime_data['Date']) # Create new column
+    crime_data_copy['New_Date'] = pd.to_datetime(crime_data_copy['Date']) # Create new column
     
-    crime_data.dropna(inplace=True) # Drop the NaN values
+    crime_data_copy.dropna(inplace=True) # Drop the NaN values
 
-    crime_data = crime_data[crime_data['Community Area'] != 0] # Dropping the row which contain Community Area as 0
-    crime_data['RegionName'] = crime_data['Community Area'].apply(get_community) # change coordinates to neighborhood name
+    crime_data_copy = crime_data_copy[crime_data_copy['Community Area'] != 0] # Dropping the row which contain Community Area as 0
+    crime_data_copy['RegionName'] = crime_data_copy['Community Area'].apply(get_community) # change coordinates to neighborhood name
     # crime_data.rename(columns={'Location':'RegionName'}, inplace = True) # Rename the column
-    return crime_data
+    return crime_data_copy
 
 
 def dropCrimeDataColumns(col:list, crime_data:pd.DataFrame):
@@ -244,7 +245,80 @@ def transpose_data(data:pd.DataFrame):
     data['date'] = pd.to_datetime(data['date'])
 
     return data.copy()
+
+def cleanCrimeData(crime_data:pd.DataFrame):
+    ''' 
+    Step 1) Converting the Date
+        Convert the crime data to a much suitable format and dropping the rows which contain NaN
+    '''
+    crime_data = convertCrimeData(crime_data)
+
+    '''
+    Step 2) Dropping the unecessary columns such as X & Y Coordinate, 
+        Date, Block, IUCR, Description, Domestic, Beat, District, FBI code, Ward, Updated on, Latitude, Longitude
+    '''
+
+    col = ['ID', 'New_Date', 'Primary Type', 'Location Description', 'Arrest', 'Community Area', 'RegionName']
+    crime_data =  dropCrimeDataColumns(col, crime_data)
+    print("Columns: ", crime_data.columns.to_list())
+
+    '''
+    Step 3) Filtering
+        Pre Covid, Post Covid and Decade Crime Data (Taking the data for the past decade to use for machine learning model)
+    '''
+    # The function called sepeates the pre covid (2017-2019) and post covid (2021-present) crimes into 2 different dataframes.
+    (crime_data_2017_2019, crime_data_2021_present) = pre_covid_post_covid(crime_data)
+    crime_data_2014 = decade_crime(crime_data)
+
+    # Pre Covid Range Verification
+    print("Pre Covid Min new_date value: ", crime_data_2017_2019['New_Date'].min()) # Earliest record
+    print("Pre Covid Max new_date value: ", crime_data_2017_2019['New_Date'].max()) # Latest record
+    print()
+
+    # Post Covid Range Verification
+    print("Post Covid Min new_date value: ", crime_data_2021_present['New_Date'].min()) # Earliest record
+    print("Post Covid Max new_date value: ", crime_data_2021_present['New_Date'].max()) # Latest record
+    print()
+
+    # Decade Crime Range Verification
+    print("Decade Crime Min new_date value: ", crime_data_2014['New_Date'].min()) # Earliest record
+    print("Decade Crime Max new_date value: ", crime_data_2014['New_Date'].max()) # Latest record
+
+    '''
+    Step 4) Saving the Dataframe to a CSV file
+    '''
+    crime_data_2021_present.to_csv('csv_files/Crimes_2021_to_Present.csv', index=False)
+    crime_data_2017_2019.to_csv('csv_files/Crimes_2017_to_2019.csv', index=False)
+    crime_data_2014.to_csv('csv_files/Crimes_2014.csv', index=False)
+
+def cleanHousingData(neighborhood_data:pd.DataFrame):
+    '''
+    Step 1: Filtering
+        
+    '''
+    neighborhood_data = filterNeighborhood(neighborhood_data)
+    (neighborhood_data_2017_2019, neighborhood_data_2021_present) = pre_covid_hd_post_covid_hd(neighborhood_data)
+
+    '''
+    Step 2: Transposing the Data
+        NOTE: Only run this once because otherwise it will produce an error due to excessive rotation
+    '''
+    neighborhood_data_2017_2019 = transpose_data(data=neighborhood_data_2017_2019)
+    neighborhood_data_2021_present = transpose_data(data=neighborhood_data_2021_present)
+    # print("Pre-Covid Housing Data in Chicago")
+    # display(neighborhood_data_2017_2019.head())
+    # print("Post-Covid Housing Data in Chicago")
+
+    # display(neighborhood_data_2021_present.head())
+
+    '''
+    Step 3: Saving the DataFrame
+    '''
+    neighborhood_data_2017_2019.to_csv('csv_files/neighborhood_data_2017_2019.csv', index = False)
+    neighborhood_data_2021_present.to_csv('csv_files/neighborhood_data_2021_present.csv', index = False)
+
 def main():
+
     print("Welcome to the Cleaning Process, BE PATIENT WITH ME")
     crime_data = pd.read_csv('csv_files/Crimes_2001_to_Present.csv')
     neighborhood_data = pd.read_csv('csv_files/Neighborhood_House_Price.csv')
