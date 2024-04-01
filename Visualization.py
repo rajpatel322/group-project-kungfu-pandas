@@ -10,8 +10,6 @@ postcovid_df['Period'] = 'Post-Covid'
 
 combined_df = pd.concat([precovid_df, postcovid_df])
 
-columns_names = combined_df.columns
-print(columns_names)
 
 selected_neighborhoods = [
     "East Garfield Park",
