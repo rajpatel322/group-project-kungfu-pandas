@@ -128,7 +128,7 @@ def train_test(X_train, X_test, y_train, y_test, features):
     # y_pred = model.predict(X_test)
 
     accuracy = accuracy_score(y_test, (probabilities > 0.5).astype(int))
-    print("Accuracy:", accuracy)
+    print("Accuracy of the model on the test dataset:", accuracy)
 
     '''
     Step 3
