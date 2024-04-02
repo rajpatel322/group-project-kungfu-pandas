@@ -35,7 +35,7 @@ def get_min(col_name, df):
             key = x
     return key
 
-def parse_df(data:pd.DataFrame):
+def neighborhood_parse_df(data:pd.DataFrame):
     columns = data.columns.to_list()
     columns = columns[1:] # skip the first index
     print("THE MINIMUM AND MAXIMUM HOUSE PRICES FOR EACH NEIGHBORHOOD AND THE DATES FOR WHEN THESE PRICES OCCURED", end= "\n\n")
@@ -81,8 +81,47 @@ def neighborhood_min_max(df:pd.DataFrame):
 
     print(df.to_string(index=False), end = "\n\n")
 
-def get_neighborhood_price_stats(df:pd.DataFrame, df2:pd.DataFrame):
+def get_neighborhood_price_stats(data:pd.DataFrame):
     '''This function will calculate the max, min, average'''
+
+    columns = data.columns.to_list()
+    columns = columns[1:] # skip the first index
+    print("\nTHE MINIMUM AND MAXIMUM HOUSE PRICES FOR EACH NEIGHBORHOOD AND THE DATES FOR WHEN THESE PRICES OCCURED", end= "\n\n")
+    map = {}
+    map2 = {}
+    min_price_list = []
+    max_price_list = []
+    min_date_list = []
+    max_date_list = []
+    avg_price_list = []
+    median_price_list = []
+    
+    for column in columns:
+        min_date = data.loc[data[column] == data[column].min(), 'date'].to_list()[0]
+        max_date = data.loc[data[column] == data[column].max(), 'date'].to_list()[0]
+        min_price_list.append(data[column].min())
+        min_date_list.append(min_date)
+        max_price_list.append(data[column].max())
+        max_date_list.append(max_date)
+        avg_price_list.append(data[column].mean())
+        median_price_list.append(data[column].median())
+
+    map['Neighborhood'] = columns
+    map['Min Price'] = min_price_list
+    map['Min Date'] = min_date_list
+    map['Max Price'] = max_price_list
+    map['Max Date'] = max_date_list
+
+    map2['Neighborhood'] = columns
+    map2['Avg Price'] = avg_price_list
+    map2['Med Price'] = median_price_list
+
+    df = pd.DataFrame(map)
+    df2 = pd.DataFrame(map2)
+
+    df['Min Date'] = pd.to_datetime(df['Min Date'])
+    df['Max Date'] = pd.to_datetime(df['Max Date'])
+
     # get the avg min price, avg max price for all neighborhoods and their specifications
     print("AVG MIN PRICE: ", round(df['Min Price'].mean(),2), "  AVG MAX PRICE: ", round(df['Max Price'].mean(),2), end="\n\n")
 
@@ -114,16 +153,33 @@ def get_neighborhood_price_stats(df:pd.DataFrame, df2:pd.DataFrame):
     print("\tCheapest Neighborhood: ", med_min.iloc[0], ' $',med_min.iloc[1].round(2), end="\n\n", sep='')
     print("\tExpensive Neighborhood: ", med_max.iloc[0], ' $',med_max.iloc[1].round(2), end="\n\n", sep='')
     # print(df['Max Date'].info())
+
+def crime_parse_df(data:pd.DataFrame):
+    print("Least Common Type of Crime: ",data['Primary Type'].min())
+    print("Most Common Type of Crime: ",data['Primary Type'].max(), end="\n\n\n")
+
+    data2 = data[['RegionName', 'Arrest']]
+
+    group_df = (data2.groupby(['RegionName']).sum().reset_index()) # Arrest
     
+    group_df_2 = (data2.groupby(['RegionName']).count().reset_index()) # Crime
+    group_df_2.rename(columns={'Arrest':'NUM CRIME'}, inplace=True)
+    return group_df, group_df_2
+
+def print_neighborhood_crimes(df:pd.DataFrame):
+    print("THE NUMBER OF CRIMES FOR EACH NEIGHBORHOOD\n")
+    pd.set_option("display.max_rows", None)
+    print(df.to_string(index=False), end = "\n\n")
 
 def get_crime_stats(data:pd.DataFrame):
-    # most and least common type of crime
+    '''most and least common type of crime'''
 
     print("Least Common Type of Crime: ",data['Primary Type'].min())
     print("Most Common Type of Crime: ",data['Primary Type'].max(), end="\n\n\n")
 
     # neighborhoods with the most and least arrest  # more arrest = active police
     # step 1, group the data
+
     data2 = data[['RegionName', 'Arrest']]
 
     group_df = (data2.groupby(['RegionName']).sum().reset_index()) # Arrest
@@ -131,9 +187,9 @@ def get_crime_stats(data:pd.DataFrame):
     group_df_2 = (data2.groupby(['RegionName']).count().reset_index()) # Crime
     group_df_2.rename(columns={'Arrest':'NUM CRIME'}, inplace=True)
 
-    print("THE NUMBER OF CRIMES FOR EACH NEIGHBORHOOD\n")
-    pd.set_option("display.max_rows", None)
-    print(group_df_2.to_string(index=False), end = "\n\n")
+    # print("THE NUMBER OF CRIMES FOR EACH NEIGHBORHOOD\n")
+    # pd.set_option("display.max_rows", None)
+    # print(group_df_2.to_string(index=False), end = "\n\n")
 
     least_arrest = group_df[group_df['Arrest']==group_df['Arrest'].min()].iloc[0]
     most_arrest = group_df[group_df['Arrest']==group_df['Arrest'].max()].iloc[0]
@@ -165,16 +221,16 @@ def get_crime_stats(data:pd.DataFrame):
     data4 = data4[['New_Date', 'ID']]
     data4['New_Date'] = data4['New_Date'].apply(lambda x: x.strftime("%B"))
     
-    data4 = data4.groupby(['New_Date']).count().reset_index()
-    data4.rename(columns={'New_Date':'Month', "ID": 'NUM CRIMES'}, inplace=True)
-    print("LIST OF MONTHS WITH NUMBER OF CRIMES FROM MOST TO LEAST", end="\n\n")
-    print(data4.sort_values('NUM CRIMES', ascending=False).to_string(index=False), end= "\n\n\n")
+    # data4 = data4.groupby(['New_Date']).count().reset_index()
+    # data4.rename(columns={'New_Date':'Month', "ID": 'NUM CRIMES'}, inplace=True)
+    # print("LIST OF MONTHS WITH NUMBER OF CRIMES FROM MOST TO LEAST", end="\n\n")
+    # print(data4.sort_values('NUM CRIMES', ascending=False).to_string(index=False), end= "\n\n\n")
 
     # Use Severity to display most common level of crime in each neighborhood
-    data5 = data[['RegionName', 'Severity_Score']]
-    data5 = data5.groupby('RegionName')['Severity_Score'].agg(lambda x: x.mode()).reset_index()
-    print("MOST COMMON LEVEL OF CRIME IN EACH NEIGHBORHOOD")
-    print(data5.sort_values('Severity_Score', ascending=False).to_string(index=False))
+    # data5 = data[['RegionName', 'Severity_Score']]
+    # data5 = data5.groupby('RegionName')['Severity_Score'].agg(lambda x: x.mode()).reset_index()
+    # print("MOST COMMON LEVEL OF CRIME IN EACH NEIGHBORHOOD")
+    # print(data5.sort_values('Severity_Score', ascending=False).to_string(index=False))
 
 
 def main():
@@ -183,20 +239,22 @@ def main():
 
 
     print("HOUSE PRICE BETWEEN 2017-19")
-    df, df2 = parse_df(neighborhood_2017_2019)
-    neighborhood_min_max(df)
-    get_neighborhood_price_stats(df, df2)
-    # get_neighborhood_price_stats(neighborhood_2017_2019)
-    # print("~"*160)
-    # print("HOUSE PRICE BETWEEN 2021-present")
-    # get_neighborhood_price_stats(neighborhood_2021_present)
+    #df, df2 = neighborhood_parse_df(neighborhood_2017_2019)
+    # neighborhood_min_max(df)
+    get_neighborhood_price_stats(neighborhood_2017_2019)
 
-    print("#"*160)
+    print("HOUSE PRICE BETWEEN 2021-present")
+   # df3, df4 = neighborhood_parse_df(neighborhood_2021_present)
+    # neighborhood_min_max(df)
+    get_neighborhood_price_stats(neighborhood_2021_present)
+
+    # print("#"*160)
     crime_data1 = pd.read_csv('csv_files/Crimes_2017_to_2019.csv')
     print("CRIME STATS (2017-19)")
+    # g1, g2 = crime_parse_df(crime_data1)
     get_crime_stats(crime_data1)
 
-    print("~"*160)
+    # print("~"*160)
     crime_data2= pd.read_csv('csv_files/Crimes_2021_to_Present.csv')
     print("CRIME STATS (2021-Present)")
     get_crime_stats(crime_data2)
