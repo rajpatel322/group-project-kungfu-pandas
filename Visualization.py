@@ -3,16 +3,16 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 
 selected_neighborhoods = [
-        "East Garfield Park",
-        "Humboldt Park",
+        "Near West Side",
+        "West Town",
         "Loop",
-        "Lower West Side",
         "Near North Side",
         "Near South Side",
-        "Near West Side",
+        "Lower West Side",
+        "East Garfield Park",
         "North Lawndale",
         "South Lawndale",
-        "West Town",
+        "Humboldt Park",
     ]
 
 def visualization_one():
