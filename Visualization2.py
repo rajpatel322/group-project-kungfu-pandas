@@ -44,7 +44,7 @@ sorted = overall.sort_values(by='OverallPercentage', ascending=False)['Primary T
 pivot_table = pivot_table[sorted]
 
 plt.figure(figsize=(10,6))
-sns.heatmap(pivot_table, annot=False, cmap='viridis', linecolor='white', linewidths=0.05)
+sns.heatmap(pivot_table, annot=False, cmap='coolwarm', linecolor='white', linewidths=0.05)
 plt.suptitle('Percentage Distribution of Crime Types by Location')
 plt.title('Theft and Battery are the most frequently committed crimes\nespecially in the neighborhoods of Lincoln Park and the Loop')
 plt.ylabel('Neighborhoods')

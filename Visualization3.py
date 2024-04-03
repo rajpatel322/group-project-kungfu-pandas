@@ -21,7 +21,7 @@ merged_data = crime_count.merge(avg_housing_prices, left_on='RegionName', right_
 
 #quartiles for crime count
 merged_data['CrimeQuartile'] = pd.qcut(merged_data['CrimeCount'], 4, labels=['Q1', 'Q2', 'Q3', 'Q4'])
-
+print(merged_data)
 print("25th percentile crime's avg housing price: ",merged_data[merged_data['CrimeQuartile'] == 'Q1']['HousingPrice'].median())
 print("50th percentile crime's avg housing price: ",merged_data[merged_data['CrimeQuartile'] == 'Q2']['HousingPrice'].median())
 print("75th percentile crime's avg housing price: ",merged_data[merged_data['CrimeQuartile'] == 'Q3']['HousingPrice'].median())
