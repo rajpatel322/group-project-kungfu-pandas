@@ -271,18 +271,18 @@ def cleanCrimeData(crime_data:pd.DataFrame):
     crime_data_2014 = decade_crime(crime_data)
 
     # Pre Covid Range Verification
-    print("Pre Covid Min new_date value: ", crime_data_2017_2019['New_Date'].min()) # Earliest record
-    print("Pre Covid Max new_date value: ", crime_data_2017_2019['New_Date'].max()) # Latest record
-    print()
+    # print("Pre Covid Min new_date value: ", crime_data_2017_2019['New_Date'].min()) # Earliest record
+    # print("Pre Covid Max new_date value: ", crime_data_2017_2019['New_Date'].max()) # Latest record
+    # print()
 
     # Post Covid Range Verification
-    print("Post Covid Min new_date value: ", crime_data_2021_present['New_Date'].min()) # Earliest record
-    print("Post Covid Max new_date value: ", crime_data_2021_present['New_Date'].max()) # Latest record
-    print()
+    # print("Post Covid Min new_date value: ", crime_data_2021_present['New_Date'].min()) # Earliest record
+    # print("Post Covid Max new_date value: ", crime_data_2021_present['New_Date'].max()) # Latest record
+    # print()
 
     # Decade Crime Range Verification
-    print("Decade Crime Min new_date value: ", crime_data_2014['New_Date'].min()) # Earliest record
-    print("Decade Crime Max new_date value: ", crime_data_2014['New_Date'].max()) # Latest record
+    # print("Decade Crime Min new_date value: ", crime_data_2014['New_Date'].min()) # Earliest record
+    # print("Decade Crime Max new_date value: ", crime_data_2014['New_Date'].max()) # Latest record
 
     '''
     Step 4) Saving the Dataframe to a CSV file

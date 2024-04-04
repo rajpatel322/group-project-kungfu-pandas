@@ -2,6 +2,7 @@ import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 
+
 postcovid_df = pd.read_csv('csv_files/Crimes_2021_to_Present.csv')
 
 selected_neighborhoods2 = [
@@ -24,32 +25,35 @@ selected_neighborhoods2 = [
         "Hermosa",
     ]
 
-filteredpostcovid_df = postcovid_df[postcovid_df['RegionName'].isin(selected_neighborhoods2)]
+def visualization2():
+    filteredpostcovid_df = postcovid_df[postcovid_df['RegionName'].isin(selected_neighborhoods2)]
 
-crime_counts = filteredpostcovid_df.groupby(['RegionName', 'Primary Type']).size().reset_index(name='Count')
+    crime_counts = filteredpostcovid_df.groupby(['RegionName', 'Primary Type']).size().reset_index(name='Count')
 
-crime_by_location = filteredpostcovid_df.groupby('RegionName').size().reset_index(name='TotalCount')
+    crime_by_location = filteredpostcovid_df.groupby('RegionName').size().reset_index(name='TotalCount')
 
-crime_with_totals = crime_counts.merge(crime_by_location, on='RegionName')
+    crime_with_totals = crime_counts.merge(crime_by_location, on='RegionName')
 
-crime_with_totals['Percentage'] = (crime_with_totals['Count'] / crime_with_totals['TotalCount']) *100
+    crime_with_totals['Percentage'] = (crime_with_totals['Count'] / crime_with_totals['TotalCount']) *100
 
-pivot_table = crime_with_totals.pivot(index='RegionName', columns= 'Primary Type', values = 'Percentage')
+    pivot_table = crime_with_totals.pivot(index='RegionName', columns= 'Primary Type', values = 'Percentage')
 
-overall = crime_with_totals.groupby('Primary Type')['Count'].sum() / crime_with_totals.groupby('Primary Type')['TotalCount'].sum()
-overall = overall.reset_index(name='OverallPercentage')
+    overall = crime_with_totals.groupby('Primary Type')['Count'].sum() / crime_with_totals.groupby('Primary Type')['TotalCount'].sum()
+    overall = overall.reset_index(name='OverallPercentage')
 
-sorted = overall.sort_values(by='OverallPercentage', ascending=False)['Primary Type']
+    sorted = overall.sort_values(by='OverallPercentage', ascending=False)['Primary Type']
 
-pivot_table = pivot_table[sorted]
+    pivot_table = pivot_table[sorted]
 
-plt.figure(figsize=(10,6))
-sns.heatmap(pivot_table, annot=False, cmap='coolwarm', linecolor='white', linewidths=0.05)
-plt.suptitle('Percentage Distribution of Crime Types by Location')
-plt.title('Theft and Battery are the most frequently committed crimes\nespecially in the neighborhoods of Lincoln Park and the Loop')
-plt.ylabel('Neighborhoods')
-plt.xlabel('Type of Crime')
-plt.xticks(rotation=85, fontsize = 8)
-plt.yticks(fontsize=10)
-plt.tight_layout()
-plt.show()
+    plt.figure(figsize=(10,6))
+    sns.heatmap(pivot_table, annot=False, cmap='coolwarm', linecolor='white', linewidths=0.05)
+    plt.title('Percentage Distribution of Crime Types by Location')
+    # plt.title('Theft and Battery are the most frequently committed crimes\nespecially in the neighborhoods of Lincoln Park and the Loop')
+    plt.ylabel('Neighborhoods')
+    plt.xlabel('Type of Crime')
+    plt.xticks(rotation=85, fontsize = 8)
+    plt.yticks(fontsize=10)
+    plt.tight_layout()
+    plt.show()
+
+

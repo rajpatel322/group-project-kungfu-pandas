@@ -221,10 +221,10 @@ def get_crime_stats(data:pd.DataFrame):
     data4 = data4[['New_Date', 'ID']]
     data4['New_Date'] = data4['New_Date'].apply(lambda x: x.strftime("%B"))
     
-    # data4 = data4.groupby(['New_Date']).count().reset_index()
-    # data4.rename(columns={'New_Date':'Month', "ID": 'NUM CRIMES'}, inplace=True)
-    # print("LIST OF MONTHS WITH NUMBER OF CRIMES FROM MOST TO LEAST", end="\n\n")
-    # print(data4.sort_values('NUM CRIMES', ascending=False).to_string(index=False), end= "\n\n\n")
+    data4 = data4.groupby(['New_Date']).count().reset_index()
+    data4.rename(columns={'New_Date':'Month', "ID": 'NUM CRIMES'}, inplace=True)
+    print("LIST OF MONTHS WITH NUMBER OF CRIMES FROM MOST TO LEAST", end="\n\n")
+    print(data4.sort_values('NUM CRIMES', ascending=False).to_string(index=False), end= "\n\n\n")
 
     # Use Severity to display most common level of crime in each neighborhood
     # data5 = data[['RegionName', 'Severity_Score']]
