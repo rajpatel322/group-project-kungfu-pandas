@@ -3,7 +3,6 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 
 
-postcovid_df = pd.read_csv('csv_files/Crimes_2021_to_Present.csv')
 
 selected_neighborhoods2 = [
         "Near West Side",
@@ -26,6 +25,8 @@ selected_neighborhoods2 = [
     ]
 
 def visualization2():
+    postcovid_df = pd.read_csv('csv_files/Crimes_2021_to_Present.csv')
+    
     filteredpostcovid_df = postcovid_df[postcovid_df['RegionName'].isin(selected_neighborhoods2)]
 
     crime_counts = filteredpostcovid_df.groupby(['RegionName', 'Primary Type']).size().reset_index(name='Count')
