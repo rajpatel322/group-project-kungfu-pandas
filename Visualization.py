@@ -50,7 +50,7 @@ def visualization_one():
     sns.histplot(data=data_plot, x='RegionName', hue='Period', multiple='dodge', shrink= 0.8, palette='mako')
     plt.xticks(rotation=45)
     plt.xlabel('Neighborhood')
-    plt.ylabel('Frequency of Crime')
+    plt.ylabel('Frequency of Crime per 1000 People')
     plt.title('Frequency of Crime Pre and Post Covid by Neighborhood')
     plt.tight_layout()
     plt.show()

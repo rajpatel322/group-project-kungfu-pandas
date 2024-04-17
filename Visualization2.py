@@ -58,23 +58,25 @@ def visualization2():
 
     crime_by_location['Crimes per 1000'] = (crime_by_location['TotalCount']/ crime_by_location['Population']) *1000
 
-    crime_with_totals = crime_counts.merge(crime_by_location[['RegionName', 'Crimes per 1000']], on='RegionName')
+    crime_with_totals = crime_counts.merge(crime_by_location[['RegionName', 'Population', 'Crimes per 1000']], on='RegionName')
 
     crime_with_totals['Rate per 1000'] = (crime_with_totals['Count'] / crime_with_totals['Population']) *1000
 
     pivot_table = crime_with_totals.pivot(index='RegionName', columns= 'Primary Type', values = 'Rate per 1000')
 
-    overall = crime_with_totals.groupby('Primary Type')['Count'].sum() / crime_with_totals.groupby('Primary Type')['TotalCount'].sum()
-    overall = overall.reset_index(name='OverallPercentage')
+    total_pop = sum(pop_data2.values())
 
-    sorted = overall.sort_values(by='OverallPercentage', ascending=False)['Primary Type']
+    overall = crime_with_totals.groupby('Primary Type')['Count'].sum() / total_pop *1000
+    overall = overall.reset_index(name='Overall')
+
+    sorted = overall.sort_values(by='Overall', ascending=False)['Primary Type']
 
     pivot_table = pivot_table[sorted]
 
     plt.figure(figsize=(10,6))
     sns.heatmap(pivot_table, annot=False, cmap='coolwarm', linecolor='white', linewidths=0.05)
-    plt.title('Percentage Distribution of Crime Types by Location')
-    # plt.title('Theft and Battery are the most frequently committed crimes\nespecially in the neighborhoods of Lincoln Park and the Loop')
+    plt.title('Crime Rate per 1000 People by Crime Types and Location')
+    #plt.title('Theft and Battery are the most frequently committed crimes\nespecially in the neighborhoods of Lincoln Park and the Loop')
     plt.ylabel('Neighborhoods')
     plt.xlabel('Type of Crime')
     plt.xticks(rotation=85, fontsize = 8)
