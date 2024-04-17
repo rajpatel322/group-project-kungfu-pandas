@@ -3,7 +3,7 @@ import plotly.express as px
 import seaborn as sns
 import matplotlib.pyplot as plt
 
-crime_data = pd.read_csv('csv_files/Crimes_2017_to_2019.csv')
+crime_data = pd.read_csv('csv_files/Crimes_2021_to_Present.csv')
 
 crime_count = crime_data.groupby('RegionName').size().reset_index(name='CrimeCount')
 

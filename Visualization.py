@@ -18,7 +18,7 @@ pop_data = {
 
 "Near West Side": 67881,
 "West Town": 87781,
-"Loop": 42,298,
+"Loop": 42298,
 "Near North Side": 105481,
 "Near South Side": 28795,
 "Lower West Side": 33751,
