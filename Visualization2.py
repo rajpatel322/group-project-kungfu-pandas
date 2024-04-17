@@ -1,94 +1,46 @@
 import pandas as pd
+import plotly.express as px
 import seaborn as sns
 import matplotlib.pyplot as plt
 
+crime_data = pd.read_csv('csv_files/Crimes_2021_to_Present.csv')
+
+crime_count = crime_data.groupby('RegionName').size().reset_index(name='CrimeCount')
 
 
-selected_neighborhoods2 = [
-        "Near West Side",
-        "West Town",
-        "Loop",
-        "Near North Side",
-        "Near South Side",
-        "Lower West Side",
-        "Armor Square",
-        "East Garfield Park",
-        "North Lawndale",
-        "South Lawndale",
-        "Humboldt Park",
-        "Bridgeport",
-        "McKinley Park",
-        "West Garfield Park",
-        "Logan Square",
-        "Lincoln Park",
-        "Hermosa",
-    ]
+housing_data = pd.read_csv('csv_files/neighborhood_data_2017_2019.csv')
 
-pop_data2 = {
-        "Near West Side": 67881,
-        "West Town": 87781,
-        "Loop": 42298,
-        "Near North Side": 105481,
-        "Near South Side": 28795,
-        "Lower West Side": 33751,
-        "Armor Square": 13890,
-        "East Garfield Park": 19992, 
-        "North Lawndale": 34794,
-        "South Lawndale": 71399,
-        "Humboldt Park": 54165,
-        "Bridgeport": 33702,
-        "McKinley Park": 15923,
-        "West Garfield Park": 17433,
-        "Logan Square": 71665,
-        "Lincoln Park": 40494,
-        "Hermosa": 24062
-}
+housing_data_long = housing_data.melt(id_vars=['date'], var_name='Neighborhood', value_name='HousingPrice')
+housing_data_long['date'] = pd.to_datetime(housing_data_long['date'])
 
+avg_housing_prices = housing_data_long.groupby('Neighborhood')['HousingPrice'].mean().reset_index()
+print((avg_housing_prices))
 
-def visualization2():
-    postcovid_df = pd.read_csv('csv_files/Crimes_2021_to_Present.csv')
-    
-    filteredpostcovid_df = postcovid_df[postcovid_df['RegionName'].isin(selected_neighborhoods2)]
+# merging datasets
+merged_data = crime_count.merge(avg_housing_prices, left_on='RegionName', right_on='Neighborhood')
 
-    crime_counts = filteredpostcovid_df.groupby(['RegionName', 'Primary Type']).size().reset_index(name='Count')
+#quartiles for crime count
+merged_data['CrimeQuartile'] = pd.qcut(merged_data['CrimeCount'], 4, labels=['Q1', 'Q2', 'Q3', 'Q4'])
+print(merged_data)
+print("25th percentile crime's avg housing price: ",merged_data[merged_data['CrimeQuartile'] == 'Q1']['HousingPrice'].median())
+print("50th percentile crime's avg housing price: ",merged_data[merged_data['CrimeQuartile'] == 'Q2']['HousingPrice'].median())
+print("75th percentile crime's avg housing price: ",merged_data[merged_data['CrimeQuartile'] == 'Q3']['HousingPrice'].median())
+print("100th percentile crime's avg housing price: ",merged_data[merged_data['CrimeQuartile'] == 'Q4']['HousingPrice'].median())
 
-    crime_by_location = filteredpostcovid_df.groupby('RegionName').size().reset_index(name='TotalCount')
+# fig = px.box(merged_data, x='CrimeQuartile', y='HousingPrice',
+#              labels={'CrimeQuartile': 'Crime Rate Quartile', 'HousingPrice': 'Average Housing Price'},
+#              title='Interactive Boxplot of Housing Prices by Crime Rate Quartile')
+# fig.show()
 
-    crime_by_location['Population'] = crime_by_location['RegionName'].map(pop_data2)
+plt.figure(figsize=(10,6))
+fig = sns.boxplot(merged_data, x='CrimeQuartile', y='HousingPrice')
+            #  labels={'CrimeQuartile': 'Crime Rate Quartile', 'HousingPrice': 'Average Housing Price'})
+fig.set_title('Interactive Boxplot of Housing Prices by Crime Rate Quartile')
+fig.set_ylabel('Average Housing Price')
+fig.set_xlabel('Crime Rate Quartile')
 
-    crime_by_location['Crimes per 1000'] = (crime_by_location['TotalCount']/ crime_by_location['Population']) *1000
+plt.show()
 
-    crime_with_totals = crime_counts.merge(crime_by_location[['RegionName', 'Population', 'Crimes per 1000']], on='RegionName')
-
-    crime_with_totals['Rate per 1000'] = (crime_with_totals['Count'] / crime_with_totals['Population']) *1000
-
-    pivot_table = crime_with_totals.pivot(index='RegionName', columns= 'Primary Type', values = 'Rate per 1000')
-
-    total_pop = sum(pop_data2.values())
-
-    overall = crime_with_totals.groupby('Primary Type')['Count'].sum() / total_pop *1000
-    overall = overall.reset_index(name='Overall')
-
-    sorted = overall.sort_values(by='Overall', ascending=False)['Primary Type']
-
-    pivot_table = pivot_table[sorted]
-
-    plt.figure(figsize=(10,6))
-    sns.heatmap(pivot_table, annot=False, cmap='coolwarm', linecolor='white', linewidths=0.05)
-    plt.title('Crime Rate per 1000 People by Crime Types and Location')
-    #plt.title('Theft and Battery are the most frequently committed crimes\nespecially in the neighborhoods of Lincoln Park and the Loop')
-    plt.ylabel('Neighborhoods')
-    plt.xlabel('Type of Crime')
-    plt.xticks(rotation=85, fontsize = 8)
-    plt.yticks(fontsize=10)
-    plt.tight_layout()
-    plt.show()
-
-def main():
-    visualization2()
-
-if __name__ == "__main__":
-    main()
 
 
 
