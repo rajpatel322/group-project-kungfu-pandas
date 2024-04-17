@@ -3,6 +3,8 @@ import plotly.express as px
 import seaborn as sns
 import matplotlib.pyplot as plt
 
+#filter to only do theft and battery
+
 crime_data = pd.read_csv('csv_files/Crimes_2021_to_Present.csv')
 
 crime_count = crime_data.groupby('RegionName').size().reset_index(name='CrimeCount')
