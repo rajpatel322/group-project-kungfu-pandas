@@ -37,10 +37,14 @@ def visualization_one():
     precovid_df['Period'] = 'Pre-Covid'
     postcovid_df['Period'] = 'Post-Covid'
     combined_df = pd.concat([precovid_df, postcovid_df])
-    # columns_names = combined_df.columns
-    # print(columns_names)
 
     data_plot = combined_df[combined_df['RegionName'].isin(selected_neighborhoods)]
+
+    data_plot['Population'] = data_plot['RegionName'].map(pop_data)
+
+    data_plot['Crime Rate per 1000'] = (data_plot.groupby(['RegionName', 'Period'])['ID'].transform('count') / data_plot['Population']) *1000
+
+
 
     plt.figure(figsize=(12, 6))
     sns.histplot(data=data_plot, x='RegionName', hue='Period', multiple='dodge', shrink= 0.8, palette='mako')
