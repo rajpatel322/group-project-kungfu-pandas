@@ -24,6 +24,27 @@ selected_neighborhoods2 = [
         "Hermosa",
     ]
 
+pop_data2 = {
+        "Near West Side": 67881,
+        "West Town": 87781,
+        "Loop": 42298,
+        "Near North Side": 105481,
+        "Near South Side": 28795,
+        "Lower West Side": 33751,
+        "Armor Square": 13890,
+        "East Garfield Park": 19992, 
+        "North Lawndale": 34794,
+        "South Lawndale": 71399,
+        "Humboldt Park": 54165,
+        "Bridgeport": 33702,
+        "McKinley Park": 15923,
+        "West Garfield Park": 17433,
+        "Logan Square": 71665,
+        "Lincoln Park": 40494,
+        "Hermosa": 24062
+}
+
+
 def visualization2():
     postcovid_df = pd.read_csv('csv_files/Crimes_2021_to_Present.csv')
     
@@ -33,11 +54,15 @@ def visualization2():
 
     crime_by_location = filteredpostcovid_df.groupby('RegionName').size().reset_index(name='TotalCount')
 
-    crime_with_totals = crime_counts.merge(crime_by_location, on='RegionName')
+    crime_by_location['Population'] = crime_by_location['RegionName'].map(pop_data2)
 
-    crime_with_totals['Percentage'] = (crime_with_totals['Count'] / crime_with_totals['TotalCount']) *100
+    crime_by_location['Crimes per 1000'] = (crime_by_location['TotalCount']/ crime_by_location['Population']) *1000
 
-    pivot_table = crime_with_totals.pivot(index='RegionName', columns= 'Primary Type', values = 'Percentage')
+    crime_with_totals = crime_counts.merge(crime_by_location[['RegionName', 'Crimes per 1000']], on='RegionName')
+
+    crime_with_totals['Rate per 1000'] = (crime_with_totals['Count'] / crime_with_totals['Population']) *1000
+
+    pivot_table = crime_with_totals.pivot(index='RegionName', columns= 'Primary Type', values = 'Rate per 1000')
 
     overall = crime_with_totals.groupby('Primary Type')['Count'].sum() / crime_with_totals.groupby('Primary Type')['TotalCount'].sum()
     overall = overall.reset_index(name='OverallPercentage')
