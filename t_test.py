@@ -43,9 +43,12 @@ def ttest_uic_theft(data:pd.DataFrame, data2:pd.DataFrame):
     print(t_stat, pval)
 
     if pval < 0.05:
-        print("Reject the NULL Hypothesis: The average crime in post covid is the average crime in pre covid")
+        if t_stat > 0:
+            print("Reject the NULL Hypothesis: There is a significant decrease in theft post COVID compared to pre COVID")
+        else:
+            print("Reject the NULL Hypothesis: There is a significant increase in theft post COVID compared to pre COVID")    
     else:
-        print("Fail to reject the NULL hypothesis: The average crime in post covid is the average crime in pre covid")
+        print("Fail to reject the NULL hypothesis: There is no significant difference in theft between pre and post covid")
 
     # plt.figure(figsize=(12, 6))
 
@@ -108,7 +111,7 @@ def ttest_uic_battery(data:pd.DataFrame, data2:pd.DataFrame):
     if pval < 0.05:
         print("Reject the NULL Hypothesis: The average crime in post covid is the average crime in pre covid")
     else:
-        print("Fail to reject the NULL hypothesis: The average crime in post covid is the average crime in pre covid")
+        print("Fail to reject the NULL hypothesis: There is no significant difference in battery between pre and post covid")
 
     # plt.figure(figsize=(12, 6))
 
@@ -134,5 +137,16 @@ def main():
 
     ttest_uic_battery(pre, post)
 
+def main2():
+    pre = pd.read_csv('csv_files/Crimes_2017_to_2019.csv')
+    post = pd.read_csv('csv_files/Crimes_2021_to_Present.csv')
+
+    ttest_uic_theft(pre, post)
+
+    
+
 if __name__ == "__main__":
     main()
+
+if __name__ == "__main__":
+    main2()

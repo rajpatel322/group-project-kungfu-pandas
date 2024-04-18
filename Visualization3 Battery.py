@@ -34,6 +34,9 @@ def visualization_one():
     precovid_df = pd.read_csv('csv_files/Crimes_2017_to_2019.csv')
     postcovid_df = pd.read_csv('csv_files/Crimes_2021_to_Present.csv')
 
+    precovid_df = precovid_df[precovid_df['Primary Type'] == 'BATTERY']
+    postcovid_df = postcovid_df[postcovid_df['Primary Type'] == 'BATTERY']
+
     precovid_df['Period'] = 'Pre-Covid'
     postcovid_df['Period'] = 'Post-Covid'
     combined_df = pd.concat([precovid_df, postcovid_df])
@@ -50,8 +53,8 @@ def visualization_one():
     sns.histplot(data=data_plot, x='RegionName', hue='Period', multiple='dodge', shrink= 0.8, palette='mako')
     plt.xticks(rotation=45)
     plt.xlabel('Neighborhood')
-    plt.ylabel('Frequency of Crime per 1000 People')
-    plt.title('Frequency of Crime Pre and Post Covid by Neighborhood')
+    plt.ylabel('Frequency of Battery per 1000 People')
+    plt.title('Frequency of Battery Pre and Post Covid by Neighborhood')
     plt.tight_layout()
     plt.show()
 
