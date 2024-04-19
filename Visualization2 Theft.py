@@ -24,4 +24,8 @@ def visualization_theft():
     fig.update_layout(showlegend=True)
     fig.show()
 
-visualization_theft()
+def main():
+    visualization_theft()
+
+if __name__ == "__main__":
+    main()

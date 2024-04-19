@@ -24,5 +24,8 @@ def visualization_battery():
     fig.update_layout(showlegend=True)
     fig.show()
 
-if __name__ == '__main__':
+def main():
     visualization_battery()
+
+if __name__ == '__main__':
+    main()
