@@ -37,9 +37,9 @@ def visualization1():
     boxplot.set_ylabel('Average Housing Price ($)', fontsize=14)
     boxplot.tick_params(labelsize=12)
 
-    #for quartile in merged_data['CrimeQuartile'].unique():
-       #median = merged_data[merged_data['CrimeQuartile'] == quartile]['HousingPrice'].median()
-        #plt.text(x=quartile, y=median, s=f"Median: {median:.2f}", horizontalalignment='center')
+    for quartile in merged_data['CrimeQuartile'].unique():
+       median = merged_data[merged_data['CrimeQuartile'] == quartile]['HousingPrice'].median()
+       plt.text(x=quartile, y=median, s=f"Median: {median:.2f}", horizontalalignment='center')
     
     plt.grid(axis='y', linestyle='--', linewidth=0.7)
     plt.tight_layout()
