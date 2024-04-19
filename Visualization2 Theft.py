@@ -1,6 +1,5 @@
 import pandas as pd
-import seaborn as sns
-import matplotlib.pyplot as plt
+import plotly.express as px
 
 def visualization_theft():
     crime_data = pd.read_csv('csv_files/Crimes_2021_to_Present.csv')
@@ -15,21 +14,14 @@ def visualization_theft():
     avg_housing_prices = housing_data_long.groupby('Neighborhood')['HousingPrice'].mean().reset_index()
     
     merged_data_theft = theft_count.merge(avg_housing_prices, left_on='RegionName', right_on='Neighborhood')
-    
     merged_data_theft['CrimeQuartile'] = pd.qcut(merged_data_theft['CrimeCount'], 4, labels=['Q1', 'Q2', 'Q3', 'Q4'])
 
-    plt.figure(figsize=(12, 8))
-    sns.set(style="whitegrid")
+    fig = px.box(merged_data_theft, x='CrimeQuartile', y='HousingPrice',
+                 title='<b>Boxplot of Housing Prices by Theft Crime Rate Quartile</b>',
+                 labels={'CrimeQuartile': 'Theft Crime Rate Quartile', 'HousingPrice': 'Average Housing Price ($)'},
+                 color='CrimeQuartile', color_discrete_sequence=px.colors.qualitative.Pastel)
     
-    boxplot = sns.boxplot(x='CrimeQuartile', y='HousingPrice', data=merged_data_theft, palette="Set2", showfliers=False)
-    
-    boxplot.set_title('Boxplot of Housing Prices by Theft Crime Rate Quartile', fontsize=16)
-    boxplot.set_xlabel('Theft Crime Rate Quartile', fontsize=14)
-    boxplot.set_ylabel('Average Housing Price ($)', fontsize=14)
-    boxplot.tick_params(labelsize=12)
-    
-    plt.grid(axis='y', linestyle='--', linewidth=0.7)
-    plt.tight_layout()
-    plt.show()
+    fig.update_layout(showlegend=True)
+    fig.show()
 
 visualization_theft()
