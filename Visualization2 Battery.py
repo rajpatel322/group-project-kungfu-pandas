@@ -17,8 +17,8 @@ def visualization_battery():
     merged_data_battery = battery_count.merge(avg_housing_prices, left_on='RegionName', right_on='Neighborhood')
     merged_data_battery['CrimeQuartile'] = pd.qcut(merged_data_battery['CrimeCount'], 4, labels=['Q1', 'Q2', 'Q3', 'Q4'])
     
-    plt.figure(figsize=(10, 6))
-    sns.boxplot(x='CrimeQuartile', y='HousingPrice', data=merged_data_battery)
+    plt.figure(figsize=(8, 4))
+    sns.boxplot(x='CrimeQuartile', y='HousingPrice', data=merged_data_battery,width = 0.5)
     plt.title('Battery Crimes vs Housing Prices by Quartile')
     plt.show()
 
