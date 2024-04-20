@@ -1,5 +1,6 @@
 import pandas as pd
-import plotly.express as px
+import seaborn as sns
+import matplotlib.pyplot as plt
 
 def visualization_theft():
     crime_data = pd.read_csv('csv_files/Crimes_2021_to_Present.csv')
@@ -15,14 +16,11 @@ def visualization_theft():
     
     merged_data_theft = theft_count.merge(avg_housing_prices, left_on='RegionName', right_on='Neighborhood')
     merged_data_theft['CrimeQuartile'] = pd.qcut(merged_data_theft['CrimeCount'], 4, labels=['Q1', 'Q2', 'Q3', 'Q4'])
-
-    fig = px.box(merged_data_theft, x='CrimeQuartile', y='HousingPrice',
-                 title='<b>Boxplot of Housing Prices by Theft Crime Rate Quartile</b>',
-                 labels={'CrimeQuartile': 'Theft Crime Rate Quartile', 'HousingPrice': 'Average Housing Price ($)'},
-                 color='CrimeQuartile', color_discrete_sequence=px.colors.qualitative.Pastel)
     
-    fig.update_layout(showlegend=True)
-    fig.show()
+    plt.figure(figsize=(10, 6))
+    sns.boxplot(x='CrimeQuartile', y='HousingPrice', data=merged_data_theft)
+    plt.title('Theft Crimes vs Housing Prices by Quartile')
+    plt.show()
 
 def main():
     visualization_theft()

@@ -1,5 +1,6 @@
 import pandas as pd
-import plotly.express as px
+import seaborn as sns
+import matplotlib.pyplot as plt
 
 def visualization_battery():
     crime_data = pd.read_csv('csv_files/Crimes_2021_to_Present.csv')
@@ -15,17 +16,14 @@ def visualization_battery():
     
     merged_data_battery = battery_count.merge(avg_housing_prices, left_on='RegionName', right_on='Neighborhood')
     merged_data_battery['CrimeQuartile'] = pd.qcut(merged_data_battery['CrimeCount'], 4, labels=['Q1', 'Q2', 'Q3', 'Q4'])
-
-    fig = px.box(merged_data_battery, x='CrimeQuartile', y='HousingPrice',
-                 title='<b>Boxplot of Housing Prices by Battery Crime Rate Quartile</b>',
-                 labels={'CrimeQuartile': 'Battery Crime Rate Quartile', 'HousingPrice': 'Average Housing Price ($)'},
-                 color='CrimeQuartile', color_discrete_sequence=px.colors.qualitative.Pastel)
     
-    fig.update_layout(showlegend=True)
-    fig.show()
+    plt.figure(figsize=(10, 6))
+    sns.boxplot(x='CrimeQuartile', y='HousingPrice', data=merged_data_battery)
+    plt.title('Battery Crimes vs Housing Prices by Quartile')
+    plt.show()
 
 def main():
     visualization_battery()
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
