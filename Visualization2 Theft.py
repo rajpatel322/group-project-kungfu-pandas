@@ -18,7 +18,7 @@ def visualization_theft():
     merged_data_theft['CrimeQuartile'] = pd.qcut(merged_data_theft['CrimeCount'], 4, labels=['Q1', 'Q2', 'Q3', 'Q4'])
     
     plt.figure(figsize=(8, 4))
-    sns.boxplot(x='CrimeQuartile', y='HousingPrice', data=merged_data_theft, width = 0.5)
+    sns.boxplot(x='CrimeQuartile', y='HousingPrice', data=merged_data_theft, width = 0.5, palette='rocket')
     plt.title('Theft Crimes vs Housing Prices by Quartile')
     plt.show()
 
