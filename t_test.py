@@ -22,7 +22,7 @@ def ttest_uic_theft(data:pd.DataFrame, data2:pd.DataFrame):
     ]
     data = data[data['RegionName'].isin(selected_neighborhoods)]
     data = data[data['Primary Type'] == 'THEFT']
-    print(data)
+    #print(data)
     data2 = data2[data2['RegionName'].isin(selected_neighborhoods)]
     data2 = data2[data2['Primary Type'] == 'THEFT']
 
@@ -87,7 +87,7 @@ def ttest_uic_battery(data:pd.DataFrame, data2:pd.DataFrame):
     ]
     data = data[data['RegionName'].isin(selected_neighborhoods)]
     data = data[data['Primary Type'] == 'BATTERY']
-    print(data)
+    #print(data)
     data2 = data2[data2['RegionName'].isin(selected_neighborhoods)]
     data2 = data2[data2['Primary Type'] == 'BATTERY']
 
@@ -148,8 +148,8 @@ def main2():
 
     
 
-if __name__ == "__main__":
-    main()
+# if __name__ == "__main__":
+#     main()
 
-if __name__ == "__main__":
-    main2()
+# if __name__ == "__main__":
+#     main2()

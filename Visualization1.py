@@ -84,11 +84,11 @@ def visualization2():
     plt.tight_layout()
     plt.show()
 
-def main():
-    visualization2()
+# def main():
+#     visualization2()
 
-if __name__ == "__main__":
-    main()
+# if __name__ == "__main__":
+#     main()
 
 
 
